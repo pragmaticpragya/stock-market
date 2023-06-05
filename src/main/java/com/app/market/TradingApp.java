@@ -1,13 +1,11 @@
 package com.app.market;
 
-import com.app.market.constants.OrderType;
-import com.app.market.model.BuyOrder;
+import com.app.market.service.FileServiceImpl;
 import com.app.market.service.TradingServiceImpl;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalTime;
-import java.util.Scanner;
+import java.util.List;
 
 public class TradingApp {
 
@@ -16,9 +14,9 @@ public class TradingApp {
 
 
         System.out.println("Starting App");
-
-        readFromFile();
-
+        String filePath = "/Users/ritigupta/Downloads/stockmarket/src/main/java/com/app/market/data.txt";
+        List<String[]> orders =  getOrdersFromFile(filePath);
+        matchAndExecuteBuyOrder(orders);
 //        tradingServiceImpl.addSellOrder("#1","BAC",200.0,100, LocalTime.now());
 //        tradingServiceImpl.addSellOrder("#2","BAC",500.0,100, LocalTime.now());
 //
@@ -28,31 +26,26 @@ public class TradingApp {
     }
 
 
-    private static void readFromFile() throws FileNotFoundException {
+    private static List<String[]> getOrdersFromFile(String filePath) throws FileNotFoundException {
+        FileServiceImpl fileServiceImpl = new FileServiceImpl(filePath);
+        return fileServiceImpl.fileReader();
+    }
+
+    private static void matchAndExecuteBuyOrder(List<String[]> orders){
         TradingServiceImpl tradingServiceImpl = new TradingServiceImpl();
-
-        File orderFile = new File("/Users/ritigupta/Downloads/stockmarket/src/main/java/com/app/market/data.txt");
-        Scanner scanner = new Scanner(orderFile);
-        while(scanner.hasNextLine()){
-            String[] data = scanner.nextLine().split(" ");
+        for (String[] data : orders) {
             String orderId = data[0];
-
             LocalTime time = LocalTime.parse(data[1]);
             String stockname = data[2];
             String type = data[3];
-
             Double price = Double.parseDouble(data[4]);
-
             int quantity = Integer.parseInt(data[5]);
 
-            if (type.equals("buy")){
+            if (type.equals("buy")) {
                 tradingServiceImpl.matchAndExecuteBuyOrder(orderId, stockname, price, quantity, time);
-            }
-            else {
+            } else {
                 tradingServiceImpl.addSellOrder(orderId, stockname, price, quantity, time);
-
             }
         }
-
     }
 }

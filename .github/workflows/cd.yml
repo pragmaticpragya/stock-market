@@ -1,0 +1,15 @@
+name: Java cd on github hosted runners server for deployment
+
+concurrency: production
+
+on:
+  push:
+    branches:
+      - MVP
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: deploy

@@ -9,7 +9,7 @@ public class BuyOrder extends Order {
 
 
     public BuyOrder(String id, LocalTime time, String symbol, Double price, int quantity) {
-        super(id, time, symbol, price, quantity)
+        super(id, time, symbol, price, quantity);
     }
 
     @Override
